@@ -6,7 +6,7 @@ def main():
      #sys.stdout.write("$ ")
     while True:
      sys.stdout.flush()
-     
+
      sys.stdout.write("$ ")
 
      user_input = input()
@@ -30,6 +30,9 @@ def main():
         print("type is a shell builtin")
      else:
         print(f"{user_input}: command not found")
+     if user_input.startswith("type invalid"):
+        print((user_input[4:]))
+
 
     # Wait for user input
     input()
