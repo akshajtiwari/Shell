@@ -13,8 +13,8 @@ def main():
         break
      if user_input.startswith("echo "):
         print(user_input[5:0])
-        
-     print(f"{user_input}: command not found")
+     else:
+        print(f"{user_input}: command not found")
     # Wait for user input
     input()
 
