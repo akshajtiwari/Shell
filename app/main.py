@@ -33,7 +33,7 @@ def main():
         print(f"{user_input}: command not found")
 
      if user_input.startswith("type invalid_"):
-        print(user_input[4:]+": not found")
+        print(user_input[5:]+": not found")
 
 
     # Wait for user input
