@@ -26,6 +26,8 @@ def main():
 
      if user_input == 'invalid_command':
         print('invalid_command: not found')
+     if user_input == 'type':
+        print("type is a shell builtin")
 
     print(f"{user_input}: command not found")
 
