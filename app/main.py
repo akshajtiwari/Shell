@@ -8,7 +8,7 @@ def main():
      sys.stdout.write("$ ")
      sys.stdout.flush
      user_input = input()
-     if user_input.lower()=="exit ":
+     if user_input.lower()=="exit 0":
         sys.exit(0)
         break
      elif user_input.startswith("echo "):
