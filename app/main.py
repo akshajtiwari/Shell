@@ -8,7 +8,7 @@ def main():
      sys.stdout.write("$ ")
      sys.stdout.flush
      user_input = input()
-     if user_input.lower()=="exit":
+     if user_input.lower()=="exit 0":
         break
      print(f"{user_input}: command not found")
     # Wait for user input
