@@ -11,7 +11,7 @@ def main():
      if user_input.lower()=="exit 0":
         sys.exit(0)
         break
-     elif user_input.startswith("echo "):
+     if user_input.startswith("echo "):
         print(user_input[5:])
      if user_input == 'type echo':
         print('echo is a shell builtin')
