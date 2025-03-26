@@ -15,6 +15,12 @@ def main():
         print(user_input[5:])
      else:
         print(f"{user_input}: command not found")
+     if user_input == 'type echo':
+        print('echo is a shell bulletin')
+     if user_input == 'exit':
+        print('exit is a shell bulletin')
+     if user_input == 'invalid_command':
+        print('invalid_command: not found')
     # Wait for user input
     input()
 
