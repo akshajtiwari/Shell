@@ -6,21 +6,20 @@ def main():
      #sys.stdout.write("$ ")
     while True:
      sys.stdout.write("$ ")
-     sys.stdout.flush
+     sys.stdout.flush()
      user_input = input()
      if user_input.lower()=="exit 0":
         sys.exit(0)
         break
      elif user_input.startswith("echo "):
         print(user_input[5:])
-     else:
-        print(f"{user_input}: command not found")
      if user_input == 'type echo':
-        print('echo is a shell bulletin')
+        print('echo is a shell builtin')
      if user_input == 'exit':
-        print('exit is a shell bulletin')
+        print('exit is a shell builtin')
      if user_input == 'invalid_command':
         print('invalid_command: not found')
+    print(f"{user_input}: command not found")
     # Wait for user input
     input()
 
