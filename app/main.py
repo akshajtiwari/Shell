@@ -6,7 +6,9 @@ def main():
      #sys.stdout.write("$ ")
     sys.stdout.write("$ ")
     user_input = input()
+    while True:
     print(f"{user_input}: command not found")
+    continue
     # Wait for user input
     input()
 
