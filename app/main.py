@@ -11,6 +11,9 @@ def main():
      if user_input.lower()=="exit 0":
         sys.exit(0)
         break
+     if user_input.startswith("echo "):
+        print(user_input[5:0])
+        
      print(f"{user_input}: command not found")
     # Wait for user input
     input()
