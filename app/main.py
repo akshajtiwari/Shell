@@ -6,10 +6,10 @@ def main():
      #sys.stdout.write("$ ")
     sys.stdout.write("$ ")
     while True:
-        user_input = input()
-        if user_input.lower()=="exit":
-            break
-    print(f"{user_input}: command not found")
+     user_input = input()
+     if user_input.lower()=="exit":
+        break
+     print(f"{user_input}: command not found")
     # Wait for user input
     input()
 
