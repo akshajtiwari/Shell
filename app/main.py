@@ -5,9 +5,9 @@ def main():
      #Uncomment this block to pass the first stage
      #sys.stdout.write("$ ")
     while True:
-     sys.stdout.write("$ ")
-
      sys.stdout.flush()
+     
+     sys.stdout.write("$ ")
 
      user_input = input()
 
@@ -15,18 +15,18 @@ def main():
         sys.exit(0)
         break
 
-     if user_input.startswith("echo "):
+     elif user_input.startswith("echo "):
         print(user_input[5:])
 
-     if user_input == 'type echo':
+     elif user_input == 'type echo':
         print('echo is a shell builtin')
 
-     if user_input == 'type exit':
+     elif user_input == 'type exit':
         print('exit is a shell builtin')
 
-     if user_input == 'invalid_command':
+     elif user_input == 'invalid_command':
         print('invalid_command: not found')
-     if user_input == 'type type':
+     elif user_input == 'type type':
         print("type is a shell builtin")
      else:
         print(f"{user_input}: command not found")
