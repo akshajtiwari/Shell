@@ -26,12 +26,14 @@ def main():
 
      elif user_input == 'invalid_command':
         print('invalid_command: not found')
+
      elif user_input == 'type type':
         print("type is a shell builtin")
      else:
         print(f"{user_input}: command not found")
-     if user_input.__contains__("type invalid"):
-        print(f"{user_input[4:]}:not found")
+
+     if user_input.startswith("type invalid_"):
+        print(user_input[4:]+"not found")
 
 
     # Wait for user input
