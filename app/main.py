@@ -2,11 +2,14 @@ import sys
 import os
 
 def find_executable(command):
-    for directory in os.environ.get("PATH", "").split(":"):
-        full_path = os.path.join(directory, command)
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+    path_dirs = os.environ.get("PATH", "").split(":")  
+    
+    for directory in path_dirs:
+        full_path = os.path.join(directory, command)  
+        
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK): 
             return full_path  
-    return None 
+    return None
 
 
 
