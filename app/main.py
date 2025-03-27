@@ -11,8 +11,8 @@ def find_executable(command):
         if os.path.isdir(path):  # Ensure it's a valid directory
             for f in os.listdir(path):  # Iterate over files in the directory
                 if f == command:  # Check if the file matches the command
-                    subprocess.run(path)
-                    print(f"{command} is {path}/{command}")  # Print full path
+                    subprocess.run(f in os.listdir(path))
+                    #print(f"{command} is {path}/{command}")  # Print full path
                     return path + "/" + command  # Return the full path
 
     return None  # Return None if not found
