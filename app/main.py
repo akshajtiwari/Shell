@@ -6,7 +6,7 @@ def find_executable(command):
         full_path = os.path.join(directory, command)
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
             return full_path  
-    return None  
+    return None 
 
 
 
