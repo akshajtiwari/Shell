@@ -2,14 +2,16 @@ import sys
 import os
 
 def find_executable(command):
-    path_dirs = os.environ.get("PATH", "").split(":")  
+    """Search for an executable in directories listed in PATH."""
+    path_dirs = os.environ.get("PATH", "").split(":")  # Get directories from PATH
     
     for directory in path_dirs:
-        full_path = os.path.join(directory, command)  
+        full_path = os.path.join(directory, command)  # Construct full path
         
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK): 
-            return full_path  
-    return None
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if it's executable
+            return full_path  # Return first match found
+
+    return None  # Return None if no match is found
 
 
 
@@ -17,43 +19,38 @@ def main():
      #Uncomment this block to pass the first stage
      #sys.stdout.write("$ ")
     while True:
-     sys.stdout.flush()
+        sys.stdout.flush()
+        sys.stdout.write("$ ")  # Display shell prompt
+        user_input = input().strip()  # Read input and remove extra spaces
 
-     sys.stdout.write("$ ")
+        if user_input.lower() == "exit 0":
+            sys.exit(0)
 
-     user_input = input()
+        elif user_input.startswith("echo "):
+            print(user_input[5:])
 
-     if user_input.lower()=="exit 0":
-        sys.exit(0)
-        break
+        elif user_input.startswith("type "):  # Handling the `type` command
+            command = user_input[5:]  # Extract the command name
 
-     elif user_input.startswith("echo "):
-        print(user_input[5:])
+            # Check if it's a shell builtin
+            builtins = {"echo", "exit", "type"}
+            if command in builtins:
+                print(f"{command} is a shell builtin")
+                continue  # Skip further checks
 
-     elif user_input == 'type echo':
-        print('echo is a shell builtin')
+            # Check if it's an executable in PATH
+            path = find_executable(command)
+            if path:
+                print(f"{command} is {path}")
+            else:
+                print(f"{command}: not found")
 
-     elif user_input == 'type exit':
-        print('exit is a shell builtin')
-
-     elif user_input == 'invalid_command':
-        print('invalid_command: not found')
-
-     elif user_input == 'type type':
-        print("type is a shell builtin")
-     elif user_input.startswith("type invalid_"):
-        print(user_input[5:]+": not found")
-     else:
-        print(f"{user_input}: command not found")
-
-     
+        else:
+            print(f"{user_input}: command not found")
 
 
     # Wait for user input
     input()
 
-
 if __name__ == "__main__":
     main()
-
-    
