@@ -15,15 +15,19 @@ def find_executable(command):
                     return path + "/" + command  # Return the full path
 
     return None  # Return None if not found
-def run_executable(prompt):
+def run_executable(user_input):
     path_dirs = os.getenv("PATH", "").split(":")  
+    parts = user_input.split()  # Split input into command and arguments
+    command = parts[0]  # Extract command
+    args = parts[1:]  # Extract arguments
+
     for path in path_dirs:
-        if os.path.isdir(path):
-          for f in os.listdir(path):
-            if f==prompt:
-                result= subprocess.run(f)
-                return result
-    return None
+        full_path = os.path.join(path, command)  # Construct full path
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if executable
+            result = subprocess.run([full_path] + args)  # Run with arguments
+            return result
+    return None  # Return None if not found
+
 
 
 def main():
@@ -55,11 +59,10 @@ def main():
         else:
             print(f"{user_input}: command not found")
             
-        path = run_executable(prompt)
-        if not path:
-            print(f"{command}: command not found")
-        else:
+        result = run_executable(user_input)
+        if result is None:
             print(f"{user_input}: command not found")
+
 
 if __name__ == "__main__":
     main()
