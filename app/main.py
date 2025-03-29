@@ -4,17 +4,23 @@ import subprocess
 import shlex
 
 def run_executable(user_input):
-    """Run a command with support for output redirection (> and 1>)."""
+    """Run a command, supporting output redirection (> and 1>)."""
 
-    # ✅ Detect if the command contains redirection (`>`, `1>`)
+    # ✅ Detect redirection
     if " > " in user_input or " 1> " in user_input:
         parts = shlex.split(user_input)  # ✅ Split properly, preserving quotes
 
         # ✅ Find redirection operator (`>` or `1>`)
-        try:
-            redirect_index = parts.index(">")
-        except ValueError:
-            redirect_index = parts.index("1>")  # If `1>` is used instead
+        for i, part in enumerate(parts):
+            if part in [">", "1>"]:
+                redirect_index = i
+                break
+        else:
+            redirect_index = -1  # No redirection found (shouldn't happen)
+
+        if redirect_index == -1 or redirect_index + 1 >= len(parts):
+            print("Syntax error: No output file specified")
+            return
         
         # ✅ Extract command and output file
         command_parts = parts[:redirect_index]  # Everything before `>` is the command
@@ -29,6 +35,7 @@ def run_executable(user_input):
             # ✅ Run external commands and redirect output
             with open(output_file, "w") as f:
                 subprocess.run(command_parts, stdout=f, stderr=subprocess.PIPE, text=True)
+        
         return  # ✅ Prevent extra output
 
     else:
@@ -45,9 +52,6 @@ def main():
 
         if user_input == "exit 0":
             sys.exit(0)
-        elif user_input.startswith("echo "):
-            args = shlex.split(user_input[5:])
-            print(" ".join(args))
         elif user_input.startswith("pwd"):
             print(os.getcwd())
         elif user_input.startswith("cd "):
