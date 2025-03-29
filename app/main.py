@@ -2,68 +2,97 @@ import sys
 import os
 import subprocess
 import shlex
+import readline
+
+def find_executable(command):
+    """Find if the command exists in PATH and return full path."""
+    for path in os.getenv("PATH", "").split(":"):
+        full_path = os.path.join(path, command)
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            return full_path  
+    return None
 
 def run_executable(user_input):
-    """Run a command, supporting output redirection (> and 1>)."""
+    """Run the command if it exists in PATH."""
+    parts = shlex.split(user_input)  # Correctly split input while handling quotes
+    if not parts:
+        return  # If the command is empty, do nothing
 
-    if " > " in user_input or " 1> " in user_input:
-        parts = shlex.split(user_input)  # ✅ Properly split input while handling quotes
+    command = parts[0]
+    args = parts[1:]
 
-        # ✅ Find redirection operator (`>` or `1>`)
-        for i, part in enumerate(parts):
-            if part in [">", "1>"]:
-                redirect_index = i
-                break
-        else:
-            redirect_index = -1  # No redirection found (shouldn't happen)
+    executable_path = find_executable(command)
 
-        if redirect_index == -1 or redirect_index + 1 >= len(parts):
-            print("Syntax error: No output file specified")
-            return
-
-        # ✅ Extract command and output file
-        command_parts = parts[:redirect_index]  # Everything before `>` is the command
-        output_file = parts[redirect_index + 1]  # The file after `>` is the output file
-
-        # ✅ Run command and redirect both `stdout` and `stderr`
-        with open(output_file, "w") as f:
-            process = subprocess.run(command_parts, stdout=f, stderr=subprocess.PIPE, text=True)
-
-        # ✅ Print stderr immediately if there's an error
-        if process.stderr:
-            sys.stdout.write(process.stderr)  # ✅ Show error message
-
-        return  # ✅ Prevent extra output
-
+    if executable_path:
+        try:
+            result = subprocess.run([command] + args, capture_output=True, text=True)
+            print(result.stdout, end="")  # Print output exactly as expected
+        except Exception as e:
+            print(f"Error: {e}")
     else:
-        # Normal execution (no redirection)
-        parts = shlex.split(user_input)
-        result = subprocess.run(parts, capture_output=True, text=True)
+        print(f"{command}: command not found")
 
-        # ✅ Print both `stdout` and `stderr`
-        if result.stdout:
-            sys.stdout.write(result.stdout)
-        if result.stderr:
-            sys.stdout.write(result.stderr)
+BUILTIN_COMMANDS = ["echo", "exit"]
+def complete_builtin(text, state):
+    matches = [cmd for cmd in BUILTIN_COMMANDS if cmd.startswith(text)]
+    return matches[state] + " " if state < len(matches) else None
+
+readline.set_completer(complete_builtin)
+readline.parse_and_bind("tab: complete")
+
+while True:
+    try:
+        command = input("$ ")  # Prompt for input
+        if command.strip() == "exit":
+            break
+        elif command.startswith("echo "):
+            print(command[5:])  # Mimic echo behavior
+        else:
+            print(f"Command not found: {command}")
+    except EOFError:
+        break
+
 
 def main():
     while True:
-        sys.stdout.write("$ ")  # Show shell prompt
+        sys.stdout.write("$ ")
         sys.stdout.flush()
         user_input = input().strip()
 
         if user_input == "exit 0":
             sys.exit(0)
-        elif user_input.startswith("pwd"):
-            print(os.getcwd())
+
+        elif user_input.startswith("echo "):
+            args = shlex.split(user_input[5:])
+            print(" ".join(args))
+
+        elif user_input == "pwd":
+            print(os.getcwd())  
+
+        elif user_input.startswith("cd ~"):
+            path = os.getenv("HOME")
+            os.chdir(path)
+
         elif user_input.startswith("cd "):
-            path = user_input[3:].strip()
+            path = user_input[3:]
             try:
-                os.chdir(path)
+                os.chdir(path)  # Changes the directory (handles all types of operations like ., ./, etc.)
             except FileNotFoundError:
-                print(f"cd: {path}: No such file or directory")
+                print(f"cd: {path}: No such file or directory") 
+
+        elif user_input.startswith("type "):
+            command = user_input[5:]
+            if command in {"echo", "exit", "type", "pwd"}:
+                print(f"{command} is a shell builtin")
+            else:
+                path = find_executable(command)
+                if path:
+                    print(f"{command} is {path}")  # ✅ Print full path
+                else:
+                    print(f"{command}: not found")
+
         else:
-            run_executable(user_input)  # Run command
+            run_executable(user_input)
 
 if __name__ == "__main__":
     main()
