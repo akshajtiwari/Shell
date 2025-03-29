@@ -1,7 +1,7 @@
 import sys
 import os
 import subprocess
-
+import shlex
 def find_executable(command):
     """Find if the command exists in PATH and return full path."""
     for path in os.getenv("PATH", "").split(":"):
@@ -12,7 +12,7 @@ def find_executable(command):
 
 def run_executable(user_input):
     """Run the command if it exists in PATH."""
-    parts = user_input.split()
+    parts = shlex.split(user_input)
     command = parts[0]
     args = parts[1:]
 
