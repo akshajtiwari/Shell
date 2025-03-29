@@ -15,15 +15,15 @@ def find_executable(command):
                     return path + "/" + command  # Return the full path
 
     return None  # Return None if not found
-def run_executable(command):
+def run_executable(prompt):
     path_dirs = os.getenv("PATH", "").split(":")  
     for path in path_dirs:
         if os.path.isdir(path):
           for f in os.listdir(path):
-            if f==command:
-                subprocess.run(f)
-            else:
-                return None
+            if f==prompt:
+                result= subprocess.run(f)
+                return result
+    return None
 
 
 def main():
