@@ -3,11 +3,11 @@ import os
 import subprocess
 
 def find_executable(command):
-    """Find if the command exists in PATH."""
+    """Find if the command exists in PATH and return full path."""
     for path in os.getenv("PATH", "").split(":"):
         full_path = os.path.join(path, command)
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            return full_path  # Return full path if found
+            return full_path  # ✅ Return full path
     return None
 
 def run_executable(user_input):
@@ -20,8 +20,8 @@ def run_executable(user_input):
 
     if executable_path:
         try:
-            # Run the command and get output
-            result = subprocess.run([command] + args, capture_output=True, text=True)
+            # ✅ Run using full path to avoid issues
+            result = subprocess.run([executable_path] + args, capture_output=True, text=True)
             print(result.stdout, end="")  # Print output exactly as expected
         except Exception as e:
             print(f"Error: {e}")
@@ -43,10 +43,12 @@ def main():
             command = user_input[5:]
             if command in {"echo", "exit", "type"}:
                 print(f"{command} is a shell builtin")
-            elif find_executable(command):
-                print(f"{command} is {command}")  # Print only command name, not full path
             else:
-                print(f"{command}: command not found")
+                path = find_executable(command)
+                if path:
+                    print(f"{command} is {path}")  # ✅ Print full path
+                else:
+                    print(f"{command}: command not found")
         else:
             run_executable(user_input)
 
