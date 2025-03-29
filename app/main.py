@@ -14,7 +14,7 @@ def find_executable(command):
 def run_executable(user_input):
     """Run a command, supporting output redirection (> and 1>)."""
 
-    # ✅ Step 1: Check if `>` or `1>` exists in user input
+    # ✅ Step 1: Detect redirection (`>` or `1>`)
     if " > " in user_input or " 1> " in user_input:
         parts = shlex.split(user_input)  # ✅ Step 2: Split properly
 
@@ -29,13 +29,14 @@ def run_executable(user_input):
 
         # ✅ Step 4: Handle `echo` manually
         if command_parts[0] == "echo":
-            echo_output = " ".join(command_parts[1:])  # Join the remaining args
+            echo_output = " ".join(command_parts[1:])  # Get the echo message
             with open(output_file, "w") as f:
-                f.write(echo_output + "\n")  # Write to file
+                f.write(echo_output + "\n")  # ✅ Write to file instead of printing
         else:
             # ✅ Step 5: Run external commands and redirect output
             with open(output_file, "w") as f:
                 subprocess.run(command_parts, stdout=f, stderr=subprocess.PIPE, text=True)
+        return  # ✅ Avoid printing anything extra
 
     else:
         # Normal execution without redirection
