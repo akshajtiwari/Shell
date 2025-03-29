@@ -55,7 +55,7 @@ def main():
         else:
             print(f"{user_input}: command not found")
             
-        prompt = run_executable(prompt)
+        path = run_executable(prompt)
         if not path:
             print(f"{command}: command not found")
         else:
