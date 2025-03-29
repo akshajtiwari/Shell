@@ -23,10 +23,12 @@ def run_executable(user_input):
 
     for path in path_dirs:
         full_path = os.path.join(path, command)  # Construct full path
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if executable
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if it's an executable
             result = subprocess.run([full_path] + args)  # Run with arguments
-            return result
-    return None  # Return None if not found
+            return result  # Ensure function exits on success
+    
+    return None  # If executable not found
+
 
 
 
@@ -56,13 +58,10 @@ def main():
             if not path:
                 print(f"{command}: command not found")
 
-        else:
-            print(f"{user_input}: command not found")
-            
-        result = run_executable(user_input)
-        if result is None:
-            print(f"{user_input}: command not found")
-
+            else:
+             result = run_executable(user_input)  # Try executing as command
+            if result is None:
+                print(f"{user_input}: command not found")
 
 if __name__ == "__main__":
     main()
