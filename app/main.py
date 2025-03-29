@@ -23,11 +23,14 @@ def run_executable(user_input):
 
     for path in path_dirs:
         full_path = os.path.join(path, command)  # Construct full path
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if it's an executable
-            result = subprocess.run([full_path] + args)  # Run with arguments
-            return result  # Ensure function exits on success
-    
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if executable
+            print(f"DEBUG: Executing {full_path} with arguments {args}")  # Debug print
+            result = subprocess.run([full_path] + args)  # Run executable
+            return result
+
+    print(f"DEBUG: {command} not found in PATH directories")  # Debugging info
     return None  # If executable not found
+
 
 
 
@@ -44,24 +47,22 @@ def main():
         elif user_input.startswith("echo "):
             print(user_input[5:])
 
-        elif user_input.startswith("type "):  # Handling the `type` command
-            command = user_input[5:]  # Extract the command name
-            prompt = user_input[5:]
-            # Check if it's a shell builtin
+        elif user_input.startswith("type "):  
+            command = user_input[5:]  
             builtins = {"echo", "exit", "type"}
             if command in builtins:
                 print(f"{command} is a shell builtin")
-                continue  # Skip further checks
-
-            # Check if it's an executable in PATH
+                continue  
+            
             path = find_executable(command)
             if not path:
                 print(f"{command}: command not found")
 
-            else:
-             result = run_executable(user_input)  # Try executing as command
+        else:
+            result = run_executable(user_input)  # Try executing it
             if result is None:
                 print(f"{user_input}: command not found")
+
 
 if __name__ == "__main__":
     main()
