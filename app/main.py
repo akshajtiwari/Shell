@@ -7,7 +7,8 @@ def find_executable(command):
     for path in os.getenv("PATH", "").split(":"):
         full_path = os.path.join(path, command)
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-            return full_path  # ✅ Return full path
+        if os.path.isfile(command) and os.access(command, os.X_OK):
+            return full_path  
     return None
 
 def run_executable(user_input):
