@@ -40,10 +40,13 @@ def main():
             print(user_input[5:]) 
         elif user_input == "pwd":
             print(os.getcwd())  
+        elif user_input.startswith("cd ~"):
+            path = os.getenv("HOME")
+            os.chdir(path)
         elif user_input.startswith("cd "):
          path = user_input[3:]
          try:
-            os.chdir(path)  
+            os.chdir(path)  # changes the directory (handles all types of operations like . , ./ etc)
          except FileNotFoundError:
             print(f"cd: {path}: No such file or directory") 
 
