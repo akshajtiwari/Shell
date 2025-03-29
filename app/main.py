@@ -29,7 +29,6 @@ def run_executable(user_input):
         print(f"{command}: command not found")
 
 def main():
-   
     while True:
         sys.stdout.write("$ ")
         sys.stdout.flush()
@@ -37,26 +36,28 @@ def main():
 
         if user_input == "exit 0":
             sys.exit(0)
+
         elif user_input.startswith("echo "):
-            print(user_input[5:]) 
+            args = shlex.split(user_input[5:])
+            print(" ".join(args))
+
         elif user_input == "pwd":
             print(os.getcwd())  
-        elif user_input.startswith("echo "):
-         args = shlex.split(user_input[5:])  # Correctly splits input while handling quotes
-         print(" ".join(args))
+
         elif user_input.startswith("cd ~"):
             path = os.getenv("HOME")
             os.chdir(path)
+
         elif user_input.startswith("cd "):
-         path = user_input[3:]
-         try:
-            os.chdir(path)  # changes the directory (handles all types of operations like . , ./ etc)
-         except FileNotFoundError:
-            print(f"cd: {path}: No such file or directory") 
+            path = user_input[3:]
+            try:
+                os.chdir(path)  # Changes the directory (handles all types of operations like ., ./, etc.)
+            except FileNotFoundError:
+                print(f"cd: {path}: No such file or directory") 
 
         elif user_input.startswith("type "):
             command = user_input[5:]
-            if command in {"echo", "exit", "type" , "pwd"}:
+            if command in {"echo", "exit", "type", "pwd"}:
                 print(f"{command} is a shell builtin")
             else:
                 path = find_executable(command)
