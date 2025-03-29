@@ -40,7 +40,7 @@ def main():
 
         elif user_input.startswith("type "):  # Handling the `type` command
             command = user_input[5:]  # Extract the command name
-
+            prompt = user_input[5:]
             # Check if it's a shell builtin
             builtins = {"echo", "exit", "type"}
             if command in builtins:
@@ -54,7 +54,12 @@ def main():
 
         else:
             print(f"{user_input}: command not found")
-
+            
+        prompt = run_executable(prompt)
+        if not path:
+            print(f"{command}: command not found")
+        else:
+            print(f"{user_input}: command not found")
 
 if __name__ == "__main__":
     main()
