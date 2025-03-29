@@ -40,6 +40,9 @@ def main():
             print(user_input[5:]) 
         elif user_input == "pwd":
             print(os.getcwd())  
+        elif user_input.startswith("cd "):
+            os.chdir(path)
+
         elif user_input.startswith("type "):
             command = user_input[5:]
             if command in {"echo", "exit", "type" , "pwd"}:
