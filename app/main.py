@@ -40,7 +40,7 @@ def main():
             print(user_input[5:]) 
         elif user_input == "pwd":
             print(os.getcwd())  
-        if user_input.startswith("cd "):
+        elif user_input.startswith("cd "):
          path = user_input[3:]
          try:
             os.chdir(path)  
