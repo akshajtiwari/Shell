@@ -26,7 +26,7 @@ def run_executable(user_input):
         except Exception as e:
             print(f"Error: {e}")
     else:
-        print(f"{command}: not found")
+        print(f"{command}: command not found")
 
 def main():
     """Simple shell loop."""
@@ -48,7 +48,7 @@ def main():
                 if path:
                     print(f"{command} is {path}")  # ✅ Print full path
                 else:
-                    print(f"{command}: command not found")
+                    print(f"{command}: not found")
         else:
             run_executable(user_input)
 
