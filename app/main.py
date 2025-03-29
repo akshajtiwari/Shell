@@ -2,6 +2,7 @@ import sys
 import os
 import subprocess
 import shlex
+
 def find_executable(command):
     """Find if the command exists in PATH and return full path."""
     for path in os.getenv("PATH", "").split(":"):
@@ -12,7 +13,7 @@ def find_executable(command):
 
 def run_executable(user_input):
     """Run the command if it exists in PATH."""
-    parts = shlex.split(user_input)
+    parts = user_input.split()
     command = parts[0]
     args = parts[1:]
 
@@ -40,6 +41,9 @@ def main():
             print(user_input[5:]) 
         elif user_input == "pwd":
             print(os.getcwd())  
+        elif user_input.startswith("echo "):
+         args = shlex.split(user_input[5:])  # Correctly splits input while handling quotes
+         print(" ".join(args))
         elif user_input.startswith("cd ~"):
             path = os.getenv("HOME")
             os.chdir(path)
