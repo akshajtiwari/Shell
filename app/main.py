@@ -5,40 +5,36 @@ import subprocess
 def find_executable(command):
     """Search for an executable in directories listed in PATH."""
     path_dirs = os.getenv("PATH", "").split(":")  # Get directories from PATH
-    found = False  # Track if the command is found
 
     for path in path_dirs:
-        if os.path.isdir(path):  # Ensure it's a valid directory
-            for f in os.listdir(path):  # Iterate over files in the directory
-                if f == command:  # Check if the file matches the command
-                    print(f"{command} is {path}/{command}")  # Print full path
-                    return path + "/" + command  # Return the full path
+        full_path = os.path.join(path, command)
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if executable
+            return full_path  # Return the full path if found
 
     return None  # Return None if not found
+
 def run_executable(user_input):
-    path_dirs = os.getenv("PATH", "").split(":")  
+    """Execute an external command if found in PATH."""
     parts = user_input.split()  # Split input into command and arguments
     command = parts[0]  # Extract command
     args = parts[1:]  # Extract arguments
 
-    for path in path_dirs:
-        full_path = os.path.join(path, command)  # Construct full path
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if executable
-    
-            result = subprocess.run( args)  # Run executable
-            return result
+    executable_path = find_executable(command)  # Find the full path
 
-    print(f"DEBUG: {command} not found in PATH directories")  # Debugging info
-    return None  # If executable not found
-
-
-
-
+    if executable_path:
+        try:
+            result = subprocess.run([executable_path] + args, capture_output=True, text=True)
+            print(result.stdout, end="")  # Print the output of the command
+        except Exception as e:
+            print(f"Error: {e}")  # Print error if execution fails
+    else:
+        print(f"{command}: command not found")  # Command not found
 
 def main():
     while True:
         sys.stdout.flush()
         sys.stdout.write("$ ")  # Display shell prompt
+        sys.stdout.flush()
         user_input = input().strip()  # Read input and remove extra spaces
 
         if user_input.lower() == "exit 0":
@@ -52,17 +48,15 @@ def main():
             builtins = {"echo", "exit", "type"}
             if command in builtins:
                 print(f"{command} is a shell builtin")
-                continue  
-            
-            path = find_executable(command)
-            if not path:
-                print(f"{command}: command not found")
+            else:
+                path = find_executable(command)
+                if path:
+                    print(f"{command} is {path}")
+                else:
+                    print(f"{command}: command not found")
 
         else:
-            result = run_executable(user_input)  # Try executing it
-            if result is None:
-                print(f"{user_input}: command not found")
-
+            run_executable(user_input)  # Run external command
 
 if __name__ == "__main__":
     main()
