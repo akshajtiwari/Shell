@@ -13,7 +13,10 @@ def find_executable(command):
 
 def run_executable(user_input):
     """Run the command if it exists in PATH."""
-    parts = user_input.split()
+    parts = shlex.split(user_input)  # Correctly split input while handling quotes
+    if not parts:
+        return  # If the command is empty, do nothing
+
     command = parts[0]
     args = parts[1:]
 
@@ -27,6 +30,7 @@ def run_executable(user_input):
             print(f"Error: {e}")
     else:
         print(f"{command}: command not found")
+
 
 def main():
     while True:
