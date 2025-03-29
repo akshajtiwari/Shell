@@ -25,7 +25,7 @@ def run_executable(user_input):
         full_path = os.path.join(path, command)  # Construct full path
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if executable
     
-            result = subprocess.run([full_path] + args)  # Run executable
+            result = subprocess.run( args)  # Run executable
             return result
 
     print(f"DEBUG: {command} not found in PATH directories")  # Debugging info
