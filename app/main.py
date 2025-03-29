@@ -24,7 +24,7 @@ def run_executable(user_input):
     for path in path_dirs:
         full_path = os.path.join(path, command)  # Construct full path
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):  # Check if executable
-            print(f"DEBUG: Executing {full_path} with arguments {args}")  # Debug print
+    
             result = subprocess.run([full_path] + args)  # Run executable
             return result
 
