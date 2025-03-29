@@ -21,7 +21,7 @@ def run_executable(user_input):
     if executable_path:
         try:
             # ✅ Run using full path to avoid issues
-            result = subprocess.run([executable_path] + args, capture_output=True, text=True)
+            result = subprocess.run([command] + args, capture_output=True, text=True)
             print(result.stdout, end="")  # Print output exactly as expected
         except Exception as e:
             print(f"Error: {e}")
