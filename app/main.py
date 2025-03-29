@@ -12,64 +12,35 @@ def find_executable(command):
     return None
 
 def run_executable(user_input):
-    """Run the command if it exists in PATH, supporting output redirection."""
-    
-    # Step 1: Handle output redirection (`> file`)
+    """Run a command, supporting output redirection (> and 1>)."""
+
+    # ✅ Step 1: Check if `>` or `1>` exists in user input
     if " > " in user_input or " 1> " in user_input:
-        parts = shlex.split(user_input)
-        
-        # Find the redirection symbol `>` or `1>`
+        parts = shlex.split(user_input)  # ✅ Step 2: Split properly
+
         try:
-            redirect_index = parts.index(">")
+            redirect_index = parts.index(">")  # Find the position of `>`
         except ValueError:
-            redirect_index = parts.index("1>")  # Handle explicit `1>` case
+            redirect_index = parts.index("1>")  # If `1>` is used instead
         
+        # ✅ Step 3: Separate the command and output file
         command_parts = parts[:redirect_index]  # Everything before `>` is the command
-        output_file = parts[redirect_index + 1]  # File after `>` is where output goes
+        output_file = parts[redirect_index + 1]  # The file after `>` is the output file
 
-        if not command_parts:
-            print("Error: No command before redirection")
-            return
-
-        command = command_parts[0]  # First part is the actual command
-        args = command_parts[1:]  # Rest are command arguments
-        
-        executable_path = find_executable(command)
-
-        if executable_path:
-            try:
-                # Open file in write mode and run command
-                with open(output_file, "w") as f:
-                    result = subprocess.run([command] + args, stdout=f, stderr=subprocess.PIPE, text=True)
-
-                # Print errors to stderr normally (they should still appear on screen)
-                if result.stderr:
-                    print(result.stderr, end="")
-            except Exception as e:
-                print(f"Error: {e}")
+        # ✅ Step 4: Handle `echo` manually
+        if command_parts[0] == "echo":
+            echo_output = " ".join(command_parts[1:])  # Join the remaining args
+            with open(output_file, "w") as f:
+                f.write(echo_output + "\n")  # Write to file
         else:
-            print(f"{command}: command not found")
+            # ✅ Step 5: Run external commands and redirect output
+            with open(output_file, "w") as f:
+                subprocess.run(command_parts, stdout=f, stderr=subprocess.PIPE, text=True)
 
     else:
-        # Step 2: Normal command execution (without redirection)
+        # Normal execution without redirection
         parts = shlex.split(user_input)
-        if not parts:
-            return  # If input is empty, do nothing
-
-        command = parts[0]
-        args = parts[1:]
-
-        executable_path = find_executable(command)
-
-        if executable_path:
-            try:
-                result = subprocess.run([command] + args, capture_output=True, text=True)
-                print(result.stdout, end="")  # Print normal output
-            except Exception as e:
-                print(f"Error: {e}")
-        else:
-            print(f"{command}: command not found")
-
+        subprocess.run(parts, text=True)
 
 def main():
     while True:
