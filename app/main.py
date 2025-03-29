@@ -33,66 +33,49 @@ def run_executable(user_input):
         print(f"{command}: command not found")
 
 BUILTIN_COMMANDS = ["echo", "exit"]
+
 def complete_builtin(text, state):
+    """Autocomplete built-in commands."""
     matches = [cmd for cmd in BUILTIN_COMMANDS if cmd.startswith(text)]
     return matches[state] + " " if state < len(matches) else None
 
-readline.set_completer(complete_builtin)
-readline.parse_and_bind("tab: complete")
-
-while True:
-    try:
-        command = input("$ ")  # Prompt for input
-        if command.strip() == "exit":
-            break
-        elif command.startswith("echo "):
-            print(command[5:])  # Mimic echo behavior
-        else:
-            print(f"Command not found: {command}")
-    except EOFError:
-        break
-
-
 def main():
+    """Main shell loop."""
+    readline.set_completer(complete_builtin)
+    readline.parse_and_bind("tab: complete")
+
     while True:
-        sys.stdout.write("$ ")
-        sys.stdout.flush()
-        user_input = input().strip()
-
-        if user_input == "exit 0":
-            sys.exit(0)
-
-        elif user_input.startswith("echo "):
-            args = shlex.split(user_input[5:])
-            print(" ".join(args))
-
-        elif user_input == "pwd":
-            print(os.getcwd())  
-
-        elif user_input.startswith("cd ~"):
-            path = os.getenv("HOME")
-            os.chdir(path)
-
-        elif user_input.startswith("cd "):
-            path = user_input[3:]
-            try:
-                os.chdir(path)  # Changes the directory (handles all types of operations like ., ./, etc.)
-            except FileNotFoundError:
-                print(f"cd: {path}: No such file or directory") 
-
-        elif user_input.startswith("type "):
-            command = user_input[5:]
-            if command in {"echo", "exit", "type", "pwd"}:
-                print(f"{command} is a shell builtin")
-            else:
-                path = find_executable(command)
-                if path:
-                    print(f"{command} is {path}")  # ✅ Print full path
+        try:
+            command = input("$ ").strip()  # Prompt for input
+            if command == "exit":
+                break
+            elif command.startswith("echo "):
+                print(command[5:])  # Mimic echo behavior
+            elif command.startswith("pwd"):
+                print(os.getcwd())
+            elif command.startswith("cd ~"):
+                os.chdir(os.getenv("HOME"))
+            elif command.startswith("cd "):
+                path = command[3:]
+                try:
+                    os.chdir(path)  # Changes directory
+                except FileNotFoundError:
+                    print(f"cd: {path}: No such file or directory")
+            elif command.startswith("type "):
+                cmd = command[5:]
+                if cmd in BUILTIN_COMMANDS or cmd in ["type", "pwd"]:
+                    print(f"{cmd} is a shell builtin")
                 else:
-                    print(f"{command}: not found")
+                    path = find_executable(cmd)
+                    if path:
+                        print(f"{cmd} is {path}")  # ✅ Print full path
+                    else:
+                        print(f"{cmd}: not found")
+            else:
+                run_executable(command)
 
-        else:
-            run_executable(user_input)
+        except EOFError:
+            break
 
 if __name__ == "__main__":
     main()
