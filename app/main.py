@@ -28,7 +28,7 @@ def run_executable(user_input):
         print(f"{command}: command not found")
 
 def main():
-    """Simple shell loop."""
+   
     while True:
         sys.stdout.write("$ ")
         sys.stdout.flush()
@@ -40,8 +40,12 @@ def main():
             print(user_input[5:]) 
         elif user_input == "pwd":
             print(os.getcwd())  
-        elif user_input.startswith("cd "):
-            os.chdir(path)
+        if user_input.startswith("cd "):
+         path = user_input[3:]
+         try:
+            os.chdir(path)  
+         except FileNotFoundError:
+            print(f"cd: {path}: No such file or directory") 
 
         elif user_input.startswith("type "):
             command = user_input[5:]
