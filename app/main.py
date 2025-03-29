@@ -7,7 +7,6 @@ def find_executable(command):
     for path in os.getenv("PATH", "").split(":"):
         full_path = os.path.join(path, command)
         if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-         if os.path.isfile(command) and os.access(command, os.X_OK):
             return full_path  
     return None
 
@@ -41,6 +40,8 @@ def main():
             print(user_input[5:]) 
         elif user_input.startswith("type "):
             command = user_input[5:]
+        elif user_input == "pwd":
+            print(os.getcwd()) 
             if command in {"echo", "exit", "type" , "pwd"}:
                 print(f"{command} is a shell builtin")
             else:
