@@ -38,10 +38,10 @@ def main():
             sys.exit(0)
         elif user_input.startswith("echo "):
             print(user_input[5:]) 
+        elif user_input == "pwd":
+            print(os.getcwd())  
         elif user_input.startswith("type "):
             command = user_input[5:]
-        elif user_input == "pwd":
-            print(os.getcwd()) 
             if command in {"echo", "exit", "type" , "pwd"}:
                 print(f"{command} is a shell builtin")
             else:
