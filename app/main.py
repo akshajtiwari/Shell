@@ -65,7 +65,7 @@ def main():
             else:
                 path = find_executable(command)
                 if path:
-                    print(f"{command} is {path}")  # ✅ Print full path
+                    print(f"{command} is {path}")  #  Print full path
                 else:
                     print(f"{command}: not found")
 
